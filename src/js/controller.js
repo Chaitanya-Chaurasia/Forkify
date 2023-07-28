@@ -4,6 +4,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import paginationViews from './views/paginationViews.js';
 
 // Render spinner
 
@@ -46,14 +47,24 @@ const controlSearchResults = async function () {
     // Fetch results from user query
     await model.loadSearchResults(query);
 
-    console.log(model.state.search.results);
-    resultsView.render(model.state.search.results);
+    // Render results
+
+    resultsView.render(model.getSearchResultsPage(1));
+
+    // Render pagination
+    paginationViews.render(model.state.search);
   } catch (error) {
     throw error;
   }
 };
 
-controlSearchResults();
+const controlPagination = goToPage => {
+  // 1. Render new results
+  resultsView.render(model.getSearchResultsPage(goToPage));
+
+  // 2. Render new pagination buttons
+  paginationViews.render(model.state.search);
+};
 
 const init = function () {
   // Event handler if either link changes or the page reloads (load, hashchange)
@@ -61,6 +72,9 @@ const init = function () {
 
   // Event handler if search-box, as a form is submitted
   searchView.addHandlerSearch(controlSearchResults);
+
+  // Event handler if pagination button is clicked
+  paginationViews.addHandlerClick(controlPagination);
 };
 
 init();

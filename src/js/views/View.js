@@ -5,7 +5,7 @@ export default class View {
   _data;
 
   render(data) {
-    if (data.length === 0) {
+    if (data.length === 0 || !data) {
       return this.renderError();
     }
 

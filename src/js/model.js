@@ -1,4 +1,4 @@
-import { API_KEY, API_URL } from './config.js';
+import { API_KEY, API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './views/helpers.js';
 
 export const state = {
@@ -6,6 +6,8 @@ export const state = {
   search: {
     query: '',
     results: [],
+    page: 1,
+    resultsPerPage: RES_PER_PAGE,
   },
 };
 
@@ -49,4 +51,14 @@ export const loadSearchResults = async function (query) {
   } catch (err) {
     throw err;
   }
+};
+
+// If only 10 recipes are available, then we need to show only 1 page. So we pass state.search.page as a default argument.
+
+export const getSearchResultsPage = function (page = state.search.page) {
+  // Re-assigning value of page
+  state.search.page = page;
+  const start = (page - 1) * this.state.search.resultsPerPage;
+  const end = page * this.state.search.resultsPerPage;
+  return state.search.results.slice(start, end);
 };

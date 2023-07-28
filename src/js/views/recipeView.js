@@ -112,17 +112,6 @@ class recipeView extends View {
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
   }
-
-  render(data) {
-    this._data = data;
-
-    this._clear();
-
-    this._parentElement.insertAdjacentHTML(
-      'afterbegin',
-      this._generateMarkup()
-    );
-  }
 }
 
 export default new recipeView();
