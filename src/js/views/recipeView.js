@@ -4,7 +4,6 @@ import View from './View';
 class recipeView extends View {
   // Parent element where we will render the recipe, errors and everything else
   _parentElement = document.querySelector('.recipe');
-
   // Error message
   _errorMessage;
 
@@ -53,12 +52,16 @@ class recipeView extends View {
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings">
+              <button data-update-to = "${
+                this._data.servings - 1
+              }" class="btn--tiny btn--update-servings">
                 <svg>
                   <use href="${icons}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings">
+              <button data-update-to = "${
+                this._data.servings + 1
+              }" class="btn--tiny btn--update-servings">
                 <svg>
                   <use href="${icons}#icon-plus-circle"></use>
                 </svg>
@@ -111,6 +114,25 @@ class recipeView extends View {
 
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
+  }
+
+  addHandlerUpdateServings(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--update-servings');
+      if (!btn) return;
+
+      handler(+btn.dataset.updateTo > 0 ? +btn.dataset.updateTo : 1);
+    });
+  }
+
+  addHandlerBookmark(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--bookmark');
+
+      if (!btn) return;
+      console.log(btn);
+      handler();
+    });
   }
 }
 

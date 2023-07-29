@@ -3,6 +3,7 @@ import { getJSON } from './views/helpers.js';
 
 export const state = {
   recipe: {},
+  bookmarks: [],
   search: {
     query: '',
     results: [],
@@ -61,4 +62,24 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * this.state.search.resultsPerPage;
   const end = page * this.state.search.resultsPerPage;
   return state.search.results.slice(start, end);
+};
+
+export const updateServings = function (newServings) {
+  // Update quantity of each ingredient
+  state.recipe.ingredients.forEach(ing => {
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+  });
+
+  // Update servings in state
+  state.recipe.servings = newServings;
+};
+
+export const addBookmark = function (bookMarkRecipe) {
+  state.bookmarks.push(bookMarkRecipe);
+
+  if (recipe.id === state.recipe.id) {
+    state.recipe.bookmarked = true;
+  }
+
+  console.log(bookMarkRecipe);
 };

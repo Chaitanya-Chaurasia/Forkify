@@ -15,6 +15,9 @@ const controlRecipe = async function () {
     // 2. Error handling if no URL
     if (!id) return;
 
+    // Update results view to mark selected search result
+    resultsView.render(model.getSearchResultsPage());
+
     // 3. Render spinner till recipe is loaded
     recipeView.renderSpinner();
 
@@ -66,6 +69,20 @@ const controlPagination = goToPage => {
   paginationViews.render(model.state.search);
 };
 
+const controlServings = newServings => {
+  // Update the recipe servings in state
+  model.updateServings(newServings);
+
+  // Update DOM
+  //recipeView.render(model.state.recipe);
+
+  recipeView.update(model.state.recipe);
+};
+
+const controlBookmark = () => {
+  model.addBookmark(model.state.recipe);
+};
+
 const init = function () {
   // Event handler if either link changes or the page reloads (load, hashchange)
   recipeView.addHandlerRender(controlRecipe);
@@ -75,6 +92,12 @@ const init = function () {
 
   // Event handler if pagination button is clicked
   paginationViews.addHandlerClick(controlPagination);
+
+  // Event handler if servings button is clicked
+  recipeView.addHandlerUpdateServings(controlServings);
+
+  // Event handler if bookmark button is clicked
+  recipeView.addHandlerBookmark(controlBookmark);
 };
 
 init();
