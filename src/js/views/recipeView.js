@@ -70,13 +70,12 @@ class recipeView extends View {
           </div>
 
           <div class="recipe__user-generated">
-            <svg>
-              <use href="${icons}#icon-user"></use>
-            </svg>
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
-              <use href="${icons}#icon-bookmark-fill"></use>
+              <use href="${icons}#icon-bookmark${
+      this._data.bookmarked ? '-fill' : ''
+    }"></use>
             </svg>
           </button>
         </div>
@@ -103,7 +102,7 @@ class recipeView extends View {
             href=${this._data.source_url}
             target="_blank"
           >
-            <span>Directsions</span>
+            <span>Directions</span>
             <svg class="search__icon">
               <use href="${icons}#icon-arrow-right"></use>
             </svg>
@@ -128,9 +127,7 @@ class recipeView extends View {
   addHandlerBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--bookmark');
-
       if (!btn) return;
-      console.log(btn);
       handler();
     });
   }

@@ -4,6 +4,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import bookmarksView from './views/bookmarksView.js';
 import paginationViews from './views/paginationViews.js';
 
 // Render spinner
@@ -80,24 +81,35 @@ const controlServings = newServings => {
 };
 
 const controlBookmark = () => {
-  model.addBookmark(model.state.recipe);
+  // Add or remove bookmark
+  if (!model.state.recipe.bookmarked) {
+    model.addBookmark(model.state.recipe);
+  } else {
+    model.removeBookmark(model.state.recipe);
+  }
+
+  // Update DOM for recipe view
+  recipeView.update(model.state.recipe);
+
+  // Render bookmarks on the bookmarks tab
+  bookmarksView.render(model.state.bookmarks);
 };
 
 const init = function () {
   // Event handler if either link changes or the page reloads (load, hashchange)
   recipeView.addHandlerRender(controlRecipe);
 
-  // Event handler if search-box, as a form is submitted
-  searchView.addHandlerSearch(controlSearchResults);
-
-  // Event handler if pagination button is clicked
-  paginationViews.addHandlerClick(controlPagination);
-
   // Event handler if servings button is clicked
   recipeView.addHandlerUpdateServings(controlServings);
 
   // Event handler if bookmark button is clicked
   recipeView.addHandlerBookmark(controlBookmark);
+
+  // Event handler if search-box, as a form is submitted
+  searchView.addHandlerSearch(controlSearchResults);
+
+  // Event handler if pagination button is clicked
+  paginationViews.addHandlerClick(controlPagination);
 };
 
 init();

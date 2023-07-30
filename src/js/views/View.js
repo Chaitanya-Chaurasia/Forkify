@@ -5,13 +5,22 @@ export default class View {
   _data;
 
   // Parent method that each view calls to render and update DOM
-  render(data) {
+  render(data, render = true) {
+    // If data is unreachable, render error as DOM
+
     if (data.length === 0 || !data) {
       return this.renderError();
     }
 
     this._data = data;
     const markup = this._generateMarkup();
+
+    // If we do not want to render on DOM, and only return markup
+    if (!render) {
+      return markup;
+    }
+
+    // Else, we insert new markup
     this._clear();
     this._parentElement.insertAdjacentHTML('beforeend', markup);
   }
