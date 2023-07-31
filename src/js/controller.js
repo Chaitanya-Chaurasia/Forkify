@@ -16,17 +16,18 @@ const controlRecipe = async function () {
     // 2. Error handling if no URL
     if (!id) return;
 
+    recipeView.renderSpinner();
+
     // Update results view to mark selected search result
     resultsView.render(model.getSearchResultsPage());
 
+    bookmarksView.update(model.state.bookmarks);
     // 3. Render spinner till recipe is loaded
-    recipeView.renderSpinner();
 
     // 4. Load recipe ansynchronously
     await model.loadRecipe(id);
 
     // 5. Destructure recipe from state
-    const { recipe } = model.state;
 
     // 6. Send the recpe object to recipeView() class to render recipes
     recipeView.render(recipe);
@@ -37,6 +38,7 @@ const controlRecipe = async function () {
 
 const controlSearchResults = async function () {
   try {
+    resultsView.renderSpinner();
     // Get query from search-box
 
     const query = searchView.getQuery();
@@ -46,7 +48,6 @@ const controlSearchResults = async function () {
     if (!query) return;
 
     // Render the spinner till results are loaded
-    resultsView.renderSpinner();
 
     // Fetch results from user query
     await model.loadSearchResults(query);
@@ -62,7 +63,7 @@ const controlSearchResults = async function () {
   }
 };
 
-const controlPagination = goToPage => {
+const controlPagination = function (goToPage) {
   // 1. Render new results
   resultsView.render(model.getSearchResultsPage(goToPage));
 
@@ -70,7 +71,7 @@ const controlPagination = goToPage => {
   paginationViews.render(model.state.search);
 };
 
-const controlServings = newServings => {
+const controlServings = function (newServings) {
   // Update the recipe servings in state
   model.updateServings(newServings);
 
@@ -80,12 +81,12 @@ const controlServings = newServings => {
   recipeView.update(model.state.recipe);
 };
 
-const controlBookmark = () => {
+const controlAddBookmark = function () {
   // Add or remove bookmark
   if (!model.state.recipe.bookmarked) {
     model.addBookmark(model.state.recipe);
   } else {
-    model.removeBookmark(model.state.recipe);
+    model.removeBookmark(model.state.recipe.id);
   }
 
   // Update DOM for recipe view
@@ -95,7 +96,12 @@ const controlBookmark = () => {
   bookmarksView.render(model.state.bookmarks);
 };
 
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   // Event handler if either link changes or the page reloads (load, hashchange)
   recipeView.addHandlerRender(controlRecipe);
 
@@ -103,7 +109,7 @@ const init = function () {
   recipeView.addHandlerUpdateServings(controlServings);
 
   // Event handler if bookmark button is clicked
-  recipeView.addHandlerBookmark(controlBookmark);
+  recipeView.addHandlerBookmark(controlAddBookmark);
 
   // Event handler if search-box, as a form is submitted
   searchView.addHandlerSearch(controlSearchResults);
