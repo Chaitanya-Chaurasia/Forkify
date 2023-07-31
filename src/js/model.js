@@ -90,13 +90,13 @@ export const addBookmark = function (recipe) {
   }
 };
 
-export const removeBookmark = function (recipe) {
+export const removeBookmark = function (id) {
   state.bookmarks.splice(
     state.bookmarks.findIndex(el => el.id === id),
     1
   );
 
-  if (recipe.id === state.recipe.id) {
+  if (id === state.recipe.id) {
     state.recipe.bookmarked = false;
   }
 };
